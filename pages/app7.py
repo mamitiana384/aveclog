@@ -660,8 +660,11 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
         # Feuilles pour chaque colonne contenant des doublons
         for col, df_dup in duplicate_dict.items():
             if not df_dup.empty:
-                df_dup.to_excel(writer, sheet_name=f"Doublons_{col}", index=False)
-                apply_excel_format5(writer, f"Doublons_{col}", df_dup)
+                # Nettoyer le nom de la feuille pour éviter les caractères interdits
+                safe_col_name = "".join(c if c.isalnum() or c in " _-" else "_" for c in col)[:31]  
+                
+                df_dup.to_excel(writer, sheet_name=f"Doublons_{safe_col_name}", index=False)
+                apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup)
 
         # Feuille pour les doublons combinés
         if not combined_duplicates.empty:
