@@ -30,30 +30,33 @@ st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
 # Stylisation du bouton de déconnexion avec le CSS que tu as fourni
 st.markdown("""
-<style>
-.btn-gradient {
-    background-image: linear-gradient(to right, #f6416c, #ffb347); /* Gradient de couleurs */
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.5s ease; /* Transition douce de la couleur */
-}
+    <style>
+        .btn-grad {
+            background-image: linear-gradient(to right, #FC354C 0%, #0ABFBC 51%, #FC354C 100%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+        }
 
-.btn-gradient:hover {
-    background-image: linear-gradient(to right, #ffb347, #f6416c); /* Inversion du gradient */
-}
-</style>
+        .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
-if st.button("Bouton Gradient", key="bouton_gradient"):
-    st.write("Se deconnecter")
+# Bouton avec la classe personnalisée
+if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
+    # Appliquer le style personnalisé
+    st.markdown('<a href="#" class="btn-grad">Déconnexion</a>', unsafe_allow_html=True)
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
