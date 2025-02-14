@@ -31,32 +31,34 @@ st.write("Vous êtes connecté avec succès.")
 # Stylisation du bouton de déconnexion avec le CSS que tu as fourni
 st.markdown("""
     <style>
-        .btn-grad {
-            background-image: linear-gradient(to right, #FC354C 0%, #0ABFBC 51%, #FC354C 100%);
-            margin: 10px;
-            padding: 15px 45px;
+        .btn-logout {
+            background-color: #4CAF50; /* Vert */
+            border: none;
+            color: white;
+            padding: 15px 32px;
             text-align: center;
-            text-transform: uppercase;
-            transition: 0.5s;
-            background-size: 200% auto;
-            color: white;            
-            box-shadow: 0 0 20px #eee;
-            border-radius: 10px;
-            display: block;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .btn-grad:hover {
-            background-position: right center; /* change the direction of the change here */
-            color: #fff;
-            text-decoration: none;
+        .btn-logout:hover {
+            background-color: #45a049; /* Changement de couleur au survol */
+            transform: scale(1.1); /* Effet de zoom au survol */
+        }
+
+        .btn-logout:active {
+            transform: scale(1); /* Effet d'appui sur le bouton */
         }
     </style>
 """, unsafe_allow_html=True)
 
-# Bouton avec la classe personnalisée
-if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
-    # Appliquer le style personnalisé
-    st.markdown('<a href="#" class="btn-grad">Déconnexion</a>', unsafe_allow_html=True)
+# Affichage du bouton de déconnexion personnalisé
+if st.markdown('<a href="#" class="btn-logout" onclick="window.location.reload();">🔓 Déconnexion</a>', unsafe_allow_html=True):
+    # Action de déconnexion
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
