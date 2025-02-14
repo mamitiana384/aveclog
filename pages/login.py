@@ -38,14 +38,6 @@ st.markdown("""
             box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
         }
 
-
-       
-
-        /* Pour aligner au centre */
-        .stButton > button {
-            display: block;
-            margin: 0 auto;
-        }
         /* Messages d'erreur centrés */
         .stAlert {
             text-align: center;
