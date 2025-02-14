@@ -1,35 +1,21 @@
 import streamlit as st
-import json
-from st_cookie_manager import cookie_manager
+from session import load_session_state  # Importation de la fonction pour charger l'état de la session
 
-# Fonction pour charger les utilisateurs depuis un fichier JSON
-def load_users():
-    with open("users.json", "r") as file:
-        return json.load(file)
+# Vérifier si l'utilisateur est authentifié
+def check_authentication():
+    session_state = load_session_state()
+    if "authenticated" not in session_state or not session_state["authenticated"]:
+        session_state["authenticated"] = False
+    return session_state
 
-# Fonction d'authentification
-def authenticate(username, password):
-    users = load_users()
-    return username in users and users[username] == password
+# Page principale
+def main():
+    session_state = check_authentication()  # Vérifie si l'utilisateur est authentifié
 
-# Page de connexion
-def login_page():
-    st.title("🔐 Connexion")
-    
-    username = st.text_input("Nom d'utilisateur")
-    password = st.text_input("Mot de passe", type="password")
-
-    if st.button("Se connecter"):
-        if authenticate(username, password):
-            # Enregistrer l'état de l'authentification dans les cookies
-            cookie_manager.set("authenticated", "True")
-            cookie_manager.set("username", username)
-            st.success("Connexion réussie !")
-
-            # Rediriger vers app7.py
-            st.switch_page("pages/app7.py")  
-        else:
-            st.error("Nom d'utilisateur ou mot de passe incorrect.")
+    if session_state["authenticated"]:
+        st.switch_page("pages/app7.py")  # Aller vers app7.py si l'utilisateur est authentifié
+    else:
+        st.switch_page("pages/login.py")  # Sinon, aller vers login.py
 
 if __name__ == "__main__":
-    login_page()
+    main()
