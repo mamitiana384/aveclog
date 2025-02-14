@@ -721,22 +721,24 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
     return output
 
 
-# Onglets pour les différentes fonctionnalités
-tab1, tab2, tab3, tab4, tab5, tab6, tab7,tab8,tab9,tab10 = st.tabs([
-    "Détecteur de doublons", 
-    "Croisement de fichiers", 
-    "Analyse des paiements", 
-    "Recherche de valeur", 
-    "Uniformisation des formats",
-    "Compilateur de fichier",
-    "Nettoyeur automatique de donneer",
-    "Edition Interactive",
-    "IA",
-    "Organisation de donnees"
-])
+menu = st.sidebar.radio(
+    "Navigation",
+    [
+        "Détecteur de doublons",
+        "Croisement de fichiers",
+        "Analyse des paiements",
+        "Recherche de valeur",
+        "Uniformisation des formats",
+        "Compilateur de fichier",
+        "Nettoyeur automatique de données",
+        "Édition Interactive",
+        "IA",
+        "Organisation de données",
+    ]
+)
 
 # --- Interface Streamlit ---
-with tab1:
+if menu == "Détecteur de doublons":
     st.header("Détecteur de doublons")
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
@@ -805,7 +807,7 @@ with tab1:
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
 
-with tab2:
+elif menu == "Croisement de fichiers":
     st.header("Croisement de fichiers")
 
     # Charger les deux fichiers Excel pour le croisement
@@ -908,7 +910,7 @@ with tab2:
                     mime="application/pdf"
                 )
 
-with tab3:
+elif menu == "Analyse des paiements":
     st.header("Analyse des paiements")
     
     payment_file = st.file_uploader("Choisissez le fichier des paiements", type="xlsx", key="payment_file")
@@ -946,7 +948,7 @@ with tab3:
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.xlsx"
             )
 
-with tab4:
+elif menu == "Recherche de valeur":
 
     st.header("Recherche de valeurs")
     search_files = st.file_uploader("Choisissez un ou plusieurs fichiers Excel pour la recherche", type="xlsx", accept_multiple_files=True, label_visibility="collapsed")
@@ -972,7 +974,7 @@ with tab4:
             else:
                 st.warning("Veuillez entrer au moins une valeur à rechercher.")
 
-with tab5:
+elif menu == "Uniformisation des formats":
     
     st.header("Uniformisation")
 
@@ -1037,7 +1039,7 @@ with tab5:
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
-with tab6:
+elif menu == "Compilateur de fichier":
     st.header("Compilation de fichiers Excel et d'onglets Excel")
 
     # Sélectionner entre l'assemblage de plusieurs fichiers ou de plusieurs onglets dans un même fichier
@@ -1141,7 +1143,7 @@ with tab6:
                 else:
                     st.warning("Veuillez sélectionner au moins une colonne.")
 
-with tab7:
+elif menu == "Nettoyeur automatique de données":
     st.header("Compilation de fichiers Excel avec Nettoyage Automatique")
     
     # Option de nettoyage automatique
@@ -1208,7 +1210,7 @@ with tab7:
                     )
         else:
             st.warning("Veuillez sélectionner au moins une colonne.")
-with tab8:
+elif menu == "Édition Interactive":
     st.header("Visualisations Interactives de Données")
 
     # Charger le fichier Excel pour modification
@@ -1257,7 +1259,7 @@ with tab8:
             file_name="données_modifiées.xlsx",
             mime="application/vnd.ms-excel"
         )
-with tab9:
+elif menu == "IA":
 
     st.header("Analyse Excel avec Chat IA")
 
@@ -1335,7 +1337,7 @@ with tab9:
             mime="application/vnd.ms-excel",
             key="download_button_donnees_modifiees"  # Ajoutez une clé unique ici
         )
-with tab10:
+elif menu == "Organisation de données":
     st.header("Organisation Automatique des Données")
 
     # Charger le fichier de données principal
