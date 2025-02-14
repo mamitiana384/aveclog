@@ -724,30 +724,48 @@ st.markdown("""
     <style>
         /* Style de la barre latérale */
         [data-testid="stSidebar"] {
-            background-color: #2c3e50; /* Couleur de fond */
+            background-color: #1e293b; /* Fond sombre */
             color: white;
         }
 
-        /* Style du titre dans la sidebar */
-        [data-testid="stSidebar"] h1 {
-            color: #f1c40f;
-            text-align: center;
+        /* Style du menu de navigation */
+        .sidebar-nav {
+            padding: 10px 15px;
         }
 
-        /* Style des boutons radio */
-        div[data-testid="stRadio"] label {
+        /* Style des liens */
+        .sidebar-nav a {
+            text-decoration: none;
             font-size: 18px;
             font-weight: bold;
             color: white;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
-        /* Style du texte sélectionné */
-        div[data-testid="stRadio"] label[data-testid="stRadioLabel"]:hover {
-            color: #f1c40f;
-            cursor: pointer;
+        /* Icônes */
+        .sidebar-nav a i {
+            margin-right: 10px;
+            font-size: 20px;
         }
 
-        /* Style de la section principale */
+        /* Effet au survol */
+        .sidebar-nav a:hover {
+            background-color: #f1c40f;
+            color: black;
+            transform: scale(1.05);
+        }
+
+        /* Élément actif */
+        .sidebar-nav a.active {
+            background-color: #f1c40f;
+            color: black;
+        }
+
+        /* Style du contenu principal */
         .main {
             background-color: #ecf0f1;
             padding: 20px;
@@ -755,21 +773,36 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+# Définition du menu avec des icônes FontAwesome
+menu_options = {
+    "Détecteur de doublons": "🔍",
+    "Croisement de fichiers": "🔗",
+    "Analyse des paiements": "💰",
+    "Recherche de valeur": "🔎",
+    "Uniformisation des formats": "📏",
+    "Compilateur de fichier": "📂",
+    "Nettoyeur automatique de données": "🧹",
+    "Édition Interactive": "✏️",
+    "IA": "🤖",
+    "Organisation de données": "📊"
+}
+
+# Menu de navigation avec icônes
+st.sidebar.markdown('<div class="sidebar-nav">', unsafe_allow_html=True)
+
 menu = st.sidebar.radio(
     "Navigation",
-    [
-        "Détecteur de doublons",
-        "Croisement de fichiers",
-        "Analyse des paiements",
-        "Recherche de valeur",
-        "Uniformisation des formats",
-        "Compilateur de fichier",
-        "Nettoyeur automatique de données",
-        "Édition Interactive",
-        "IA",
-        "Organisation de données",
-    ]
+    list(menu_options.keys()),  # Affichage des options
+    format_func=lambda option: f"{menu_options[option]} {option}"  # Ajout des icônes aux labels
 )
+
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+# Affichage du contenu principal
+st.markdown('<div class="main">', unsafe_allow_html=True)
+
+st.header(f"{menu_options[menu]} {menu}")  # Ajout d’icônes aux titres
 
 # --- Interface Streamlit ---
 if menu == "Détecteur de doublons":
