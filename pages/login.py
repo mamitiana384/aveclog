@@ -16,13 +16,6 @@ st.markdown("""
             text-align: center;
         }
 
-        /* Style du titre */
-        .login-container h1 {
-            color: #4f46e5;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
         /* Style des champs */
         .stTextInput>div>div>input {
             border-radius: 8px;
