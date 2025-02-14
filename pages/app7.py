@@ -28,7 +28,9 @@ if "authenticated" not in st.session_state or not st.session_state["authenticate
 # Interface principale
 st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
-
+if st.button("🔓 Se déconnecter"):
+    st.session_state["authenticated"] = False
+    st.switch_page("pages/login.py")  # Retour à la page de connexion
 
 def normalize_value(value):
     # Supprimer tous les caractères non numériques pour les numéros
@@ -1356,6 +1358,4 @@ with tab10:
             mime="application/vnd.ms-excel",
             key="download_button_organized"
         )
-if st.button("🔓 Se déconnecter"):
-    st.session_state["authenticated"] = False
-    st.switch_page("pages/login.py")  # Retour à la page de connexion
+
