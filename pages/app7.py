@@ -795,7 +795,7 @@ st.header(f"{menu_options[selected_option]} {selected_option}")
 
 # --- Interface Streamlit ---
 if selected_option == "Détecteur de doublons":
-    st.write("🔍 Fonctionnalité : Détection des doublons")
+ 
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
 
@@ -864,7 +864,7 @@ if selected_option == "Détecteur de doublons":
                         )
 
 elif selected_option == "Croisement de fichiers":
-    st.write("🔗 Fonctionnalité : Croisement de fichiers")
+ 
 
     # Charger les deux fichiers Excel pour le croisement
     file1 = st.file_uploader("Choisissez le premier fichier Excel", type="xlsx", key="file1")
@@ -967,7 +967,7 @@ elif selected_option == "Croisement de fichiers":
                 )
 
 elif selected_option == "Analyse des paiements":
-    st.write("💰 Fonctionnalité : Analyse des paiements")
+
     
     payment_file = st.file_uploader("Choisissez le fichier des paiements", type="xlsx", key="payment_file")
     transaction_file = st.file_uploader("Choisissez le fichier des transactions", type="xlsx", key="transaction_file")
@@ -1005,7 +1005,7 @@ elif selected_option == "Analyse des paiements":
             )
 
 elif selected_option == "Recherche de valeur":
-    st.write("🔎 Fonctionnalité : Recherche de valeur")
+   
     search_files = st.file_uploader("Choisissez un ou plusieurs fichiers Excel pour la recherche", type="xlsx", accept_multiple_files=True, label_visibility="collapsed")
 
     if search_files:
@@ -1030,7 +1030,7 @@ elif selected_option == "Recherche de valeur":
                 st.warning("Veuillez entrer au moins une valeur à rechercher.")
 
 elif selected_option == "Uniformisation des formats":
-    st.write("📏 Fonctionnalité : Uniformisation des formats")
+
 
     # Charger un fichier Excel
     excel_file = st.file_uploader("Choisissez le fichier Excel à uniformiser", type="xlsx")
@@ -1094,7 +1094,7 @@ elif selected_option == "Uniformisation des formats":
                 )
     
 elif selected_option == "Uniformisation des formats":
-    st.write("📏 Fonctionnalité : Uniformisation des formats")
+
 
     # Sélectionner entre l'assemblage de plusieurs fichiers ou de plusieurs onglets dans un même fichier
     compilation_type = st.radio("Choisissez le type de compilation :", 
@@ -1198,7 +1198,7 @@ elif selected_option == "Uniformisation des formats":
                     st.warning("Veuillez sélectionner au moins une colonne.")
 
 elif selected_option == "Uniformisation des formats":
-    st.write("📏 Fonctionnalité : Uniformisation des formats")
+
     
     # Option de nettoyage automatique
     nettoyage_auto = st.checkbox("Activer le nettoyage automatique des données", key="nettoyage_auto")
@@ -1265,7 +1265,7 @@ elif selected_option == "Uniformisation des formats":
         else:
             st.warning("Veuillez sélectionner au moins une colonne.")
 elif selected_option == "Édition Interactive":
-    st.write("✏️ Fonctionnalité : Édition interactive des données")
+
 
     # Charger le fichier Excel pour modification
 # Charger le fichier Excel pour modification
@@ -1314,7 +1314,7 @@ elif selected_option == "Édition Interactive":
             mime="application/vnd.ms-excel"
         )
 elif selected_option == "IA":
-    st.write("🤖 Fonctionnalité : Intelligence Artificielle")
+
 
     # Charger le fichier de données principal
     uploaded_file = st.file_uploader("Choisissez un fichier Excel (Données)", type="xlsx", key="file_uploader_donnees")
@@ -1391,7 +1391,7 @@ elif selected_option == "IA":
             key="download_button_donnees_modifiees"  # Ajoutez une clé unique ici
         )
 elif selected_option == "Organisation de données":
-    st.write("📊 Fonctionnalité : Organisation et structuration des données")
+  
 
     # Charger le fichier de données principal
     uploaded_file = st.file_uploader("Choisissez un fichier Excel à organiser", type="xlsx", key="file_uploader_organize")
