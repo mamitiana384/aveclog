@@ -28,7 +28,26 @@ if "authenticated" not in st.session_state or not st.session_state["authenticate
 # Interface principale
 st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
-if st.button("🔓 Se déconnecter"):
+st.markdown("""
+    <style>
+        .logout-button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #ff1a1a;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Bouton avec le style personnalisé
+if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
