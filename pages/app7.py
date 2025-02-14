@@ -1093,7 +1093,7 @@ elif selected_option == "Uniformisation des formats":
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
-elif selected_option == "Compilateur de fichier"
+elif selected_option == "Compilateur de fichier" :
 
 
     # Sélectionner entre l'assemblage de plusieurs fichiers ou de plusieurs onglets dans un même fichier
