@@ -30,8 +30,8 @@ st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
 st.markdown("""
     <style>
-         .btn-grad {background-image: linear-gradient(to right, #FC354C 0%, #0ABFBC  51%, #FC354C  100%)}
-         .btn-grad {
+        .btn-grad {
+            background-image: linear-gradient(to right, #FC354C 0%, #0ABFBC 51%, #FC354C 100%);
             margin: 10px;
             padding: 15px 45px;
             text-align: center;
@@ -42,19 +42,20 @@ st.markdown("""
             box-shadow: 0 0 20px #eee;
             border-radius: 10px;
             display: block;
-          }
+        }
 
-          .btn-grad:hover {
+        .btn-grad:hover {
             background-position: right center; /* change the direction of the change here */
             color: #fff;
             text-decoration: none;
-          }
-         
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# Bouton avec le style personnalisé
+# Bouton avec la classe personnalisée
 if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
+    # Appliquer le style personnalisé
+    st.markdown('<a href="#" class="btn-grad">Déconnexion</a>', unsafe_allow_html=True)
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
