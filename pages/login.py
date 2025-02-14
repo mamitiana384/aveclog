@@ -6,15 +6,7 @@ from session import save_session_state  # Importation pour sauvegarder l'état d
 st.markdown("""
     <style>
         /* Centre la boîte de connexion */
-        .login-container {
-            max-width: 400px;
-            margin: auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
+      
 
         /* Style des champs */
         .stTextInput>div>div>input {
