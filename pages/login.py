@@ -1,44 +1,75 @@
 import streamlit as st
 import json
-from session import save_session_state  # Fonction pour sauvegarder l'état de session
+from session import save_session_state  # Sauvegarde de l'état de session
 
-# Appliquer un style CSS moderne
+# Appliquer un style CSS moderne avec effet Neumorphism
 st.markdown("""
     <style>
-        /* Arrière-plan en dégradé */
+        /* Fond sombre */
         body {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            height: 100vh;
+            background-color: #1e1e2e;
+            color: white;
         }
 
         /* Conteneur du formulaire */
-     
+        .login-container {
+            max-width: 350px;
+            margin: auto;
+            padding: 25px;
+            background: #2b2b3a;
+            border-radius: 15px;
+            box-shadow: 8px 8px 15px #1a1a27, -8px -8px 15px #323245;
+            text-align: center;
+        }
 
         /* Titre */
         .login-title {
             font-size: 24px;
-            color: #fff;
             font-weight: bold;
             margin-bottom: 20px;
+            color: #fff;
         }
 
-        /* Style des champs de texte */
+        /* Champs de texte */
         input {
             width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 2px solid #ccc;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            background: #252538;
+            color: white;
             font-size: 16px;
+            box-shadow: inset 4px 4px 10px #1a1a27, inset -4px -4px 10px #323245;
         }
 
         /* Effet focus */
         input:focus {
-            border-color: #764ba2;
             outline: none;
-            box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
+            box-shadow: 0 0 10px rgba(98, 0, 238, 0.6);
         }
 
-        /* Messages d'erreur centrés */
+        /* Bouton stylisé */
+        .login-button {
+            background: #6200ee;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 4px 4px 10px #1a1a27, -4px -4px 10px #323245;
+        }
+
+        .login-button:hover {
+            background: #7f39fb;
+            transform: scale(1.05);
+        }
+
+        /* Messages d'erreur */
         .stAlert {
             text-align: center;
         }
@@ -63,7 +94,7 @@ def login_page():
     username = st.text_input("👤 Nom d'utilisateur", placeholder="Entrez votre nom")
     password = st.text_input("🔑 Mot de passe", type="password", placeholder="••••••••")
 
-    if st.button("Se connecter", key="login", help="Cliquez pour vous connecter", css_class="login-button"):
+    if st.button("Se connecter", key="login", help="Cliquez pour vous connecter"):
         if authenticate(username, password):
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
