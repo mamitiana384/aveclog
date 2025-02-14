@@ -794,8 +794,8 @@ st.markdown('<div class="main">', unsafe_allow_html=True)
 st.header(f"{menu_options[selected_option]} {selected_option}")  
 
 # --- Interface Streamlit ---
-if menu == "Détecteur de doublons":
-    st.header("Détecteur de doublons")
+if selected_option == "Détecteur de doublons":
+    st.write("🔍 Fonctionnalité : Détection des doublons")
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
 
@@ -863,8 +863,8 @@ if menu == "Détecteur de doublons":
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
 
-elif menu == "Croisement de fichiers":
-    st.header("Croisement de fichiers")
+elif selected_option == "Croisement de fichiers":
+    st.write("🔗 Fonctionnalité : Croisement de fichiers")
 
     # Charger les deux fichiers Excel pour le croisement
     file1 = st.file_uploader("Choisissez le premier fichier Excel", type="xlsx", key="file1")
@@ -966,8 +966,8 @@ elif menu == "Croisement de fichiers":
                     mime="application/pdf"
                 )
 
-elif menu == "Analyse des paiements":
-    st.header("Analyse des paiements")
+elif selected_option == "Analyse des paiements":
+    st.write("💰 Fonctionnalité : Analyse des paiements")
     
     payment_file = st.file_uploader("Choisissez le fichier des paiements", type="xlsx", key="payment_file")
     transaction_file = st.file_uploader("Choisissez le fichier des transactions", type="xlsx", key="transaction_file")
@@ -1004,9 +1004,8 @@ elif menu == "Analyse des paiements":
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.xlsx"
             )
 
-elif menu == "Recherche de valeur":
-
-    st.header("Recherche de valeurs")
+elif selected_option == "Recherche de valeur":
+    st.write("🔎 Fonctionnalité : Recherche de valeur")
     search_files = st.file_uploader("Choisissez un ou plusieurs fichiers Excel pour la recherche", type="xlsx", accept_multiple_files=True, label_visibility="collapsed")
 
     if search_files:
@@ -1030,9 +1029,8 @@ elif menu == "Recherche de valeur":
             else:
                 st.warning("Veuillez entrer au moins une valeur à rechercher.")
 
-elif menu == "Uniformisation des formats":
-    
-    st.header("Uniformisation")
+elif selected_option == "Uniformisation des formats":
+    st.write("📏 Fonctionnalité : Uniformisation des formats")
 
     # Charger un fichier Excel
     excel_file = st.file_uploader("Choisissez le fichier Excel à uniformiser", type="xlsx")
@@ -1095,8 +1093,8 @@ elif menu == "Uniformisation des formats":
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
     
-elif menu == "Compilateur de fichier":
-    st.header("Compilation de fichiers Excel et d'onglets Excel")
+elif selected_option == "Uniformisation des formats":
+    st.write("📏 Fonctionnalité : Uniformisation des formats")
 
     # Sélectionner entre l'assemblage de plusieurs fichiers ou de plusieurs onglets dans un même fichier
     compilation_type = st.radio("Choisissez le type de compilation :", 
@@ -1199,8 +1197,8 @@ elif menu == "Compilateur de fichier":
                 else:
                     st.warning("Veuillez sélectionner au moins une colonne.")
 
-elif menu == "Nettoyeur automatique de données":
-    st.header("Compilation de fichiers Excel avec Nettoyage Automatique")
+elif selected_option == "Uniformisation des formats":
+    st.write("📏 Fonctionnalité : Uniformisation des formats")
     
     # Option de nettoyage automatique
     nettoyage_auto = st.checkbox("Activer le nettoyage automatique des données", key="nettoyage_auto")
@@ -1266,8 +1264,8 @@ elif menu == "Nettoyeur automatique de données":
                     )
         else:
             st.warning("Veuillez sélectionner au moins une colonne.")
-elif menu == "Édition Interactive":
-    st.header("Visualisations Interactives de Données")
+elif selected_option == "Édition Interactive":
+    st.write("✏️ Fonctionnalité : Édition interactive des données")
 
     # Charger le fichier Excel pour modification
 # Charger le fichier Excel pour modification
@@ -1315,9 +1313,8 @@ elif menu == "Édition Interactive":
             file_name="données_modifiées.xlsx",
             mime="application/vnd.ms-excel"
         )
-elif menu == "IA":
-
-    st.header("Analyse Excel avec Chat IA")
+elif selected_option == "IA":
+    st.write("🤖 Fonctionnalité : Intelligence Artificielle")
 
     # Charger le fichier de données principal
     uploaded_file = st.file_uploader("Choisissez un fichier Excel (Données)", type="xlsx", key="file_uploader_donnees")
@@ -1393,8 +1390,8 @@ elif menu == "IA":
             mime="application/vnd.ms-excel",
             key="download_button_donnees_modifiees"  # Ajoutez une clé unique ici
         )
-elif menu == "Organisation de données":
-    st.header("Organisation Automatique des Données")
+elif selected_option == "Organisation de données":
+    st.write("📊 Fonctionnalité : Organisation et structuration des données")
 
     # Charger le fichier de données principal
     uploaded_file = st.file_uploader("Choisissez un fichier Excel à organiser", type="xlsx", key="file_uploader_organize")
