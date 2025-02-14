@@ -57,7 +57,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Affichage du bouton de déconnexion personnalisé
-if st.markdown('<a href="#" class="btn-logout" onclick="window.location.reload();">🔓 Déconnexion</a>', unsafe_allow_html=True):
+if st.markdown('<a href="#" class="btn-logout"">🔓 Déconnexion</a>', unsafe_allow_html=True):
     # Action de déconnexion
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
