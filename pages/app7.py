@@ -22,6 +22,7 @@ from openpyxl.utils import get_column_letter
 # Vérification de la connexion
 if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
     st.warning("🔴 Vous devez vous connecter.")
+    st.switch_page("pages/login.py")
     st.stop()
 
 # Interface principale
