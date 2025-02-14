@@ -1,6 +1,6 @@
 import streamlit as st
 import json
-from st_cookie_manager import cookie_manager
+from session import save_session_state  # Importation pour sauvegarder l'état de la session
 
 # Fonction pour charger les utilisateurs depuis un fichier JSON
 def load_users():
@@ -21,10 +21,12 @@ def login_page():
 
     if st.button("Se connecter"):
         if authenticate(username, password):
-            # Enregistrer l'état de l'authentification dans les cookies
-            cookie_manager.set("authenticated", "True")
-            cookie_manager.set("username", username)
+            st.session_state["authenticated"] = True
+            st.session_state["username"] = username
             st.success("Connexion réussie !")
+
+            # Sauvegarder l'état de la session
+            save_session_state({"authenticated": True, "username": username})
 
             # Rediriger vers app7.py
             st.switch_page("pages/app7.py")  
