@@ -1,5 +1,6 @@
 import streamlit as st
 import json
+from session import save_session_state  # Importation pour sauvegarder l'état de la session
 
 # Fonction pour charger les utilisateurs depuis un fichier JSON
 def load_users():
@@ -24,8 +25,10 @@ def login_page():
             st.session_state["username"] = username
             st.success("Connexion réussie !")
 
+            # Sauvegarder l'état de la session
+            save_session_state({"authenticated": True, "username": username})
+
             # Rediriger vers app7.py
-            st.session_state["authenticated"] = True
             st.switch_page("pages/app7.py")  
         else:
             st.error("Nom d'utilisateur ou mot de passe incorrect.")
