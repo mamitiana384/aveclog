@@ -2,49 +2,87 @@ import streamlit as st
 import json
 from session import save_session_state  # Importation pour sauvegarder l'état de la session
 
-# CSS pour améliorer le style de la page de connexion
+# CSS pour un design moderne
 st.markdown("""
     <style>
-        /* Centre la boîte de connexion */
-      
+        /* Arrière-plan avec un dégradé et effet flou */
+        .main {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Conteneur principal */
+       
+
+        /* Style du titre */
+        .login-title {
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
 
         /* Style des champs */
         .stTextInput>div>div>input {
             border-radius: 8px;
             padding: 10px;
             border: 2px solid #ccc;
+            width: 100%;
             transition: all 0.3s ease-in-out;
+            font-size: 16px;
         }
         
         .stTextInput>div>div>input:focus {
-            border-color: #4f46e5;
+            border-color: #764ba2;
             outline: none;
-            box-shadow: 0 0 8px rgba(79, 70, 229, 0.5);
+            box-shadow: 0 0 8px rgba(118, 75, 162, 0.5);
+        }
+
+        /* Icônes à côté des champs */
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #764ba2;
+        }
+
+        .stTextInput input {
+            padding-left: 35px;
         }
 
         /* Style du bouton */
         .login-button {
-            background: linear-gradient(135deg, #4f46e5, #9333ea);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
             width: 100%;
-            transition: 0.3s;
+            transition: 0.3s ease-in-out;
         }
 
         .login-button:hover {
-            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            background: linear-gradient(135deg, #5563de, #5a3d91);
             transform: scale(1.05);
         }
 
-        /* Centrer les erreurs */
+        /* Message d'erreur centré */
         .stAlert {
             text-align: center;
         }
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -60,8 +98,10 @@ def authenticate(username, password):
 
 # Page de connexion
 def login_page():
-    st.markdown('<div class="login-container">', unsafe_allow_html=True)
-    st.title("🔐 Connexion")
+    st.markdown('<div class="main">', unsafe_allow_html=True)
+    st.markdown('<div class="login-card">', unsafe_allow_html=True)
+    
+    st.markdown('<div class="login-title">🔐 Connexion</div>', unsafe_allow_html=True)
 
     username = st.text_input("Nom d'utilisateur", placeholder="Entrez votre nom")
     password = st.text_input("Mot de passe", type="password", placeholder="••••••••")
@@ -80,7 +120,8 @@ def login_page():
         else:
             st.error("🚨 Nom d'utilisateur ou mot de passe incorrect.")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)  # Ferme login-card
+    st.markdown('</div>', unsafe_allow_html=True)  # Ferme main
 
 if __name__ == "__main__":
     login_page()
