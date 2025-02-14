@@ -722,59 +722,52 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
 
 st.markdown("""
     <style>
-        /* Style de la barre latérale */
+        /* Style général de la sidebar */
         [data-testid="stSidebar"] {
-            background-color: #1e293b; /* Fond sombre */
+            background: linear-gradient(135deg, #1e3a8a, #9333ea);
             color: white;
         }
 
-        /* Style du menu de navigation */
-        .sidebar-nav {
-            padding: 10px 15px;
-        }
-
-        /* Style des liens */
-        .sidebar-nav a {
-            text-decoration: none;
+        /* Style du menu déroulant */
+        div[data-testid="stSelectbox"] label {
             font-size: 18px;
             font-weight: bold;
             color: white;
+        }
+
+        /* Style des boutons et éléments actifs */
+        .menu-button {
             display: flex;
             align-items: center;
+            background: #4f46e5;
+            color: white;
             padding: 10px;
+            margin: 5px 0;
             border-radius: 8px;
             transition: 0.3s;
+            font-weight: bold;
         }
 
-        /* Icônes */
-        .sidebar-nav a i {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-
-        /* Effet au survol */
-        .sidebar-nav a:hover {
-            background-color: #f1c40f;
-            color: black;
+        .menu-button:hover {
+            background: #a855f7;
             transform: scale(1.05);
         }
 
-        /* Élément actif */
-        .sidebar-nav a.active {
-            background-color: #f1c40f;
-            color: black;
+        /* Style de l'icône */
+        .menu-icon {
+            margin-right: 10px;
         }
 
         /* Style du contenu principal */
         .main {
-            background-color: #ecf0f1;
+            background: #f3f4f6;
             padding: 20px;
             border-radius: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# Définition du menu avec des icônes FontAwesome
+# Définition du menu avec des icônes Unicode
 menu_options = {
     "Détecteur de doublons": "🔍",
     "Croisement de fichiers": "🔗",
@@ -788,21 +781,17 @@ menu_options = {
     "Organisation de données": "📊"
 }
 
-# Menu de navigation avec icônes
-st.sidebar.markdown('<div class="sidebar-nav">', unsafe_allow_html=True)
-
-menu = st.sidebar.radio(
-    "Navigation",
-    list(menu_options.keys()),  # Affichage des options
-    format_func=lambda option: f"{menu_options[option]} {option}"  # Ajout des icônes aux labels
+# Sélection avec menu déroulant stylé
+selected_option = st.sidebar.selectbox(
+    "📌 **Choisissez une fonctionnalité**",
+    options=list(menu_options.keys()),
+    format_func=lambda option: f"{menu_options[option]} {option}"
 )
 
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
-
-# Affichage du contenu principal
+# Affichage du contenu avec transition douce
 st.markdown('<div class="main">', unsafe_allow_html=True)
 
-st.header(f"{menu_options[menu]} {menu}")  # Ajout d’icônes aux titres
+st.header(f"{menu_options[selected_option]} {selected_option}")  
 
 # --- Interface Streamlit ---
 if menu == "Détecteur de doublons":
