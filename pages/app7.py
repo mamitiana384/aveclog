@@ -32,33 +32,37 @@ st.write("Vous êtes connecté avec succès.")
 st.markdown("""
     <style>
         .btn-logout {
-            background-color: #4CAF50; /* Vert */
-            border: none;
+            background-color: #333333; /* Fond sombre */
+            border: 2px solid #FF6A00; /* Bordure orange */
             color: white;
-            padding: 15px 32px;
+            font-size: 16px;
+            padding: 12px 30px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
             border-radius: 12px;
+            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .btn-logout:hover {
-            background-color: #45a049; /* Changement de couleur au survol */
-            transform: scale(1.1); /* Effet de zoom au survol */
+            background-color: #FF6A00; /* Changement de couleur au survol */
+            border-color: #FF6A00;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Ombre au survol */
         }
 
         .btn-logout:active {
-            transform: scale(1); /* Effet d'appui sur le bouton */
+            background-color: #FF6A00;
+            transform: scale(0.98); /* Effet de réduction au clic */
         }
     </style>
 """, unsafe_allow_html=True)
 
 # Affichage du bouton de déconnexion personnalisé
-if st.markdown('<a href="#" class="btn-logout"">🔓 Déconnexion</a>', unsafe_allow_html=True):
-    # Action de déconnexion
+if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
+    # Appliquer le style personnalisé
+    st.markdown('<a href="#" class="btn-logout">Déconnexion</a>', unsafe_allow_html=True)
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
