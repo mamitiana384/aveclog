@@ -28,6 +28,7 @@ if "authenticated" not in st.session_state or not st.session_state["authenticate
 # Interface principale
 st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
+# Stylisation du bouton de déconnexion avec le CSS que tu as fourni
 st.markdown("""
     <style>
         .btn-grad {
@@ -52,8 +53,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-if st.markdown('<a href="#" class="btn-grad" onclick="window.location.reload();">🔓 Déconnexion</a>', unsafe_allow_html=True):
-    # Action de déconnexion
+# Bouton avec la classe personnalisée
+if st.button("🔓", key="logout", help="Se déconnecter", use_container_width=True):
+    # Appliquer le style personnalisé
+    st.markdown('<a href="#" class="btn-grad">Déconnexion</a>', unsafe_allow_html=True)
     st.session_state["authenticated"] = False
     st.switch_page("pages/login.py")  # Retour à la page de connexion
 
