@@ -720,7 +720,41 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
     output.seek(0)
     return output
 
+st.markdown("""
+    <style>
+        /* Style de la barre latérale */
+        [data-testid="stSidebar"] {
+            background-color: #2c3e50; /* Couleur de fond */
+            color: white;
+        }
 
+        /* Style du titre dans la sidebar */
+        [data-testid="stSidebar"] h1 {
+            color: #f1c40f;
+            text-align: center;
+        }
+
+        /* Style des boutons radio */
+        div[data-testid="stRadio"] label {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Style du texte sélectionné */
+        div[data-testid="stRadio"] label[data-testid="stRadioLabel"]:hover {
+            color: #f1c40f;
+            cursor: pointer;
+        }
+
+        /* Style de la section principale */
+        .main {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+""", unsafe_allow_html=True)
 menu = st.sidebar.radio(
     "Navigation",
     [
