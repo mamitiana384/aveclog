@@ -24,9 +24,7 @@ if "authenticated" not in st.session_state or not st.session_state["authenticate
     st.warning("🔴 Vous devez vous connecter.")
     st.switch_page("pages/login.py")
     st.stop()
-def app(): # Renamed to app() to be called from main.py
-    st.title("Application Principale")
-    st.write(f"Bonjour, {st.session_state['username']}!")
+
 # Interface principale
 st.title(f"Bienvenue {st.session_state['username']} 👋")
 st.write("Vous êtes connecté avec succès.")
