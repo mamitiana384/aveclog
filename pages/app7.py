@@ -1197,7 +1197,7 @@ elif selected_option == "Compilateur de fichier" :
                 else:
                     st.warning("Veuillez sélectionner au moins une colonne.")
 
-elif selected_option == "Uniformisation des formats":
+elif selected_option == "Nettoyeur automatique de données":
 
     
     # Option de nettoyage automatique
@@ -1313,7 +1313,7 @@ elif selected_option == "Édition Interactive":
             file_name="données_modifiées.xlsx",
             mime="application/vnd.ms-excel"
         )
-elif selected_option == "IA":
+elif selected_option == "Intelligence A":
 
 
     # Charger le fichier de données principal
