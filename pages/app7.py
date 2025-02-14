@@ -1313,7 +1313,7 @@ elif selected_option == "Édition Interactive":
             file_name="données_modifiées.xlsx",
             mime="application/vnd.ms-excel"
         )
-elif selected_option == "Intelligence A":
+elif selected_option == "IA":
 
 
     # Charger le fichier de données principal
