@@ -56,7 +56,36 @@ st.markdown("""
             background: linear-gradient(135deg, #5563de, #5a3d91);
             transform: scale(1.05);
         }
+        .login-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+        }
 
+        .login-button:hover {
+            background: linear-gradient(135deg, #7b7eff, #9b5be3);
+            transform: scale(1.05);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .login-button:active {
+            background: linear-gradient(135deg, #4d4dff, #6a3da0);
+            transform: scale(0.98);
+        }
+
+        /* Pour aligner au centre */
+        .stButton > button {
+            display: block;
+            margin: 0 auto;
+        }
         /* Messages d'erreur centrés */
         .stAlert {
             text-align: center;
@@ -82,7 +111,7 @@ def login_page():
     username = st.text_input("👤 Nom d'utilisateur", placeholder="Entrez votre nom")
     password = st.text_input("🔑 Mot de passe", type="password", placeholder="••••••••")
 
-    if st.button("Se connecter", key="login", help="Cliquez pour vous connecter"):
+    if st.button("Se connecter", key="login", help="Cliquez pour vous connecter", css_class="login-button"):
         if authenticate(username, password):
             st.session_state["authenticated"] = True
             st.session_state["username"] = username
