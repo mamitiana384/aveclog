@@ -25,6 +25,7 @@ def login_page():
             st.success("Connexion réussie !")
 
             # Rediriger vers app7.py
+            st.session_state["authenticated"] = True
             st.switch_page("pages/app7.py")  
         else:
             st.error("Nom d'utilisateur ou mot de passe incorrect.")
