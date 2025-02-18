@@ -975,24 +975,21 @@ elif selected_option == "Croisement de fichiers":
             st.session_state.selected_columns = selected_columns
 
             if selected_columns:
-                # Exporter le fichier croisé avec les données sélectionnées
-                excel_data = export_excel6([(merged_df[selected_columns], 'Croisement'), (recap_df, 'Récapitulatif')], 'Croisement')
+                # Préparation des données pour l'exportation
+                sheets_data = [
+                    (merged_df[selected_columns], 'Croisement'),
+                    (recap_df, 'Récapitulatif')
+                ]
+                
+                # Génération du fichier Excel
+                excel_data = export_excel6(sheets_data, 'Croisement')
+            
+                # Téléchargement du fichier Excel
                 st.download_button(
                     label="Télécharger le fichier croisé en Excel",
                     data=excel_data,
                     file_name="fichier_croise.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
-
-                # Générer le rapport PDF
-                pdf_data = generate_report(recap_df, merged_df, file1.name, file2.name)
-
-                # Bouton pour télécharger le rapport PDF
-                st.download_button(
-                    label="Télécharger le rapport PDF",
-                    data=pdf_data,
-                    file_name="rapport_croisement.pdf",
-                    mime="application/pdf"
                 )
 
 elif selected_option == "Analyse des paiements":
