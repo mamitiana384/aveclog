@@ -375,48 +375,33 @@ def cross_files(df1, df2, col_file1, col_file2):
         st.warning(f"La colonne {col_file2} est introuvable dans le résultat du croisement.")
     
     return merged_df
-def export_excel6(data_sheets, df_original=None, duplicates=None, recap_info=None, original_without_duplicates=None):
+def export_excel6(sheets_data, sheet_name):
     """
-    Exporte plusieurs DataFrames dans un fichier Excel, chaque DataFrame dans une feuille spécifique.
+    Exporte plusieurs DataFrames dans un fichier Excel.
     
-    :param data_sheets: Liste de tuples [(DataFrame, "Nom de la feuille")]
-    :param df_original: DataFrame des données initiales (optionnel)
-    :param duplicates: DataFrame des doublons détectés (optionnel)
-    :param recap_info: Dictionnaire récapitulatif (optionnel)
-    :param original_without_duplicates: DataFrame des données sans doublons (optionnel)
-    :return: BytesIO contenant le fichier Excel généré
+    sheets_data : liste de tuples (df, nom_onglet)
+    sheet_name : Nom de l'onglet principal
     """
     output = io.BytesIO()
-    
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        workbook = writer.book
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
 
-        for df, sheet_name in data_sheets:
-            if isinstance(df, pd.DataFrame):
-                df.to_excel(writer, sheet_name=sheet_name, index=False)
-                
-                # Ajustement automatique de la largeur des colonnes
-                worksheet = writer.sheets[sheet_name]
-                for i, col in enumerate(df.columns):
-                    max_len = max(df[col].astype(str).map(len).max(), len(col)) + 2
-                    worksheet.set_column(i, i, max_len)
+    for df, name in sheets_data:
+        if isinstance(df, pd.DataFrame):  # Vérifie si c'est bien un DataFrame
+            df.to_excel(writer, sheet_name=name, index=False)
 
-                # Mise en forme des en-têtes
-                header_format = workbook.add_format({'bold': True, 'bg_color': '#D9EAD3', 'border': 1})
-                for col_num, value in enumerate(df.columns.values):
-                    worksheet.write(0, col_num, value, header_format)
+    workbook = writer.book
+    for df, name in sheets_data:
+        if isinstance(df, pd.DataFrame):
+            worksheet = writer.sheets[name]
+            for i, col in enumerate(df.columns):
+                max_len = max(df[col].astype(str).map(len).max(), len(col))
+                worksheet.set_column(i, i, max_len + 2)
 
-        # Ajout des autres onglets optionnels
-        if df_original is not None:
-            df_original.to_excel(writer, sheet_name="Données Initiales", index=False)
-        if duplicates is not None:
-            duplicates.to_excel(writer, sheet_name="Doublons", index=False)
-        if original_without_duplicates is not None:
-            original_without_duplicates.to_excel(writer, sheet_name="Données sans Doublons", index=False)
-        if recap_info is not None:
-            recap_df = pd.DataFrame(recap_info)
-            recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
+            header_format = workbook.add_format({'bold': True, 'bg_color': '#D9EAD3', 'border': 1})
+            for col_num, value in enumerate(df.columns.values):
+                worksheet.write(0, col_num, value, header_format)
 
+    writer.close()
     output.seek(0)
     return output
 
