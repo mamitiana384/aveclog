@@ -375,6 +375,21 @@ def cross_files(df1, df2, col_file1, col_file2):
         st.warning(f"La colonne {col_file2} est introuvable dans le résultat du croisement.")
     
     return merged_df
+def export_excel6(df, sheet_name="Sheet1", df_original=None):
+    if isinstance(df, list):  # Vérifie si df est une liste
+        df = df[0]  # Prend le premier élément
+    
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    
+    df.to_excel(writer, sheet_name=sheet_name, index=False)
+
+    if df_original is not None:
+        df_original.to_excel(writer, sheet_name='Données Initiales', index=False)
+
+    writer.close()
+    output.seek(0)
+    return output.getvalue()
 
 # Fonction pour exporter les résultats en fichier Excel avec plusieurs onglets
 def export_excel(df, sheet_name, df_original=None, duplicates=None, recap_info=None, original_without_duplicates=None):
@@ -947,7 +962,7 @@ elif selected_option == "Croisement de fichiers":
 
             if selected_columns:
                 # Exporter le fichier croisé avec les données sélectionnées
-                excel_data = export_excel([(merged_df[selected_columns], 'Croisement'), (recap_df, 'Récapitulatif')], 'Croisement')
+                excel_data = export_excel6([(merged_df[selected_columns], 'Croisement'), (recap_df, 'Récapitulatif')], 'Croisement')
                 st.download_button(
                     label="Télécharger le fichier croisé en Excel",
                     data=excel_data,
