@@ -839,6 +839,7 @@ if selected_option == "Détecteur de doublons":
         column_names = st.multiselect("Choisissez les colonnes pour détecter les doublons", df.columns)
 
         include_original_without_duplicates = st.checkbox("Inclure les données initiales sans doublons dans l'export")
+        keep_unique_values = st.checkbox("Conserver les valeurs uniques dans les doublons détectés")
 
         if st.button("Détecter les doublons"):
             if not column_names:
@@ -851,7 +852,7 @@ if selected_option == "Détecteur de doublons":
                     duplicate_dict = detect_column_duplicates(df.copy(), column_names)
                     combined_duplicates = detect_combined_duplicates(df.copy(), column_names)
 
-                    # Suppression des doublons pour obtenir les données "sans doublons"
+                    # Récupération des indices des doublons détectés
                     all_duplicates_indices = set()
 
                     # Ajout des indices des doublons trouvés par colonne individuelle
@@ -862,8 +863,18 @@ if selected_option == "Détecteur de doublons":
                     if not combined_duplicates.empty:
                         all_duplicates_indices.update(combined_duplicates.index)
 
-                    # Suppression de toutes les lignes marquées comme doublons
-                    original_without_duplicates = df.drop(index=all_duplicates_indices)
+                    # Création du DataFrame "Données sans doublons"
+                    if include_original_without_duplicates:
+                        # Filtrer les valeurs uniques
+                        if keep_unique_values:
+                            unique_values = df.loc[~df.index.isin(all_duplicates_indices)]  # Valeurs qui ne sont pas dans les doublons
+                            original_without_duplicates = df.copy()  # Copie du DataFrame original
+                            original_without_duplicates = pd.concat([original_without_duplicates, unique_values]).drop_duplicates()
+                        else:
+                            original_without_duplicates = df.drop(index=all_duplicates_indices)
+                    else:
+                        original_without_duplicates = None
+
 
                     # Vérification et affichage des résultats
                     if all(df_dup.empty for df_dup in duplicate_dict.values()) and combined_duplicates.empty:
