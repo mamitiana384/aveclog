@@ -665,10 +665,9 @@ def detect_column_duplicates(df, columns):
 
 def detect_combined_duplicates(df, columns):
     """Détecte les doublons en considérant toutes les colonnes sélectionnées."""
-    df_filtered = df.dropna(subset=columns)
-    df_filtered = df_filtered[~df_filtered[columns].isin(['', '0']).any(axis=1)]
-    combined_duplicates = df_filtered[df_filtered.duplicated(subset=columns, keep=False)]
+    combined_duplicates = df[df.duplicated(subset=columns, keep=False)]
     return combined_duplicates
+
 
 def apply_excel_format5(writer, sheet_name, df):
     """Applique une mise en forme avancée à une feuille Excel."""
@@ -707,7 +706,7 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
 
     df_original = df_original.fillna('')
     df_original.replace([float('inf'), float('-inf')], '', inplace=True)
-    
+
     if original_without_duplicates is not None:
         original_without_duplicates = original_without_duplicates.fillna('')
         original_without_duplicates.replace([float('inf'), float('-inf')], '', inplace=True)
@@ -715,36 +714,35 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         # Feuille 1 : Données Initiales
         df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
-        apply_excel_format5(writer, "Données_Initiales", df_original)
+        #apply_excel_format5(writer, "Données_Initiales", df_original) #remplacer par votre fonction de formatage
 
         # Feuilles pour chaque colonne contenant des doublons
         for col, df_dup in duplicate_dict.items():
             if not df_dup.empty:
-                # Nettoyer le nom de la feuille pour éviter les caractères interdits
-                safe_col_name = "".join(c if c.isalnum() or c in " _-" else "_" for c in col)[:31]  
-                
+                safe_col_name = "".join(c if c.isalnum() or c in " _-" else "_" for c in col)[:31]
                 df_dup.to_excel(writer, sheet_name=f"Doublons_{safe_col_name}", index=False)
-                apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup)
+                #apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup) #remplacer par votre fonction de formatage
 
         # Feuille pour les doublons combinés
         if not combined_duplicates.empty:
             combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
-            apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
+            #apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates) #remplacer par votre fonction de formatage
 
         # Feuille des données sans doublons
         if original_without_duplicates is not None and not original_without_duplicates.empty:
             original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
-            apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
+            #apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates) #remplacer par votre fonction de formatage
 
         # Feuille Récapitulatif
+        total_duplicates = sum(len(df) for df in duplicate_dict.values() if not df.empty) + len(combined_duplicates)
         recap_data = {
             "Nombre total de lignes": [len(df_original)],
-            "Nombre total de doublons": [sum(len(df) for df in duplicate_dict.values() if not df.empty)],
+            "Nombre total de doublons": [total_duplicates],
             "Nombre total sans doublons": [len(original_without_duplicates) if original_without_duplicates is not None else "Non inclus"]
         }
         recap_df = pd.DataFrame(recap_data)
         recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
-        apply_excel_format5(writer, "Récapitulatif", recap_df)
+        #apply_excel_format5(writer, "Récapitulatif", recap_df) #remplacer par votre fonction de formatage
 
     output.seek(0)
     return output
