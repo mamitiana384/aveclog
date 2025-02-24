@@ -822,7 +822,7 @@ st.markdown('<div class="main">', unsafe_allow_html=True)
 
 st.header(f"{menu_options[selected_option]} {selected_option}")  
 
-# --- Interface Streamlit ---
+
 # --- Interface Streamlit ---
 # --- Interface Streamlit ---
 if selected_option == "Détecteur de doublons":
