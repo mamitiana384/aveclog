@@ -864,21 +864,19 @@ if selected_option == "Détecteur de doublons":
                         all_duplicates_indices.update(combined_duplicates.index)
 
                     # Création du DataFrame "Données sans doublons"
-                    # Création du DataFrame "Données sans doublons"
                     if include_original_without_duplicates:
                         if keep_unique_values:
                             # Séparer les données en doublons et non-doublons
-                            df_duplicates = df.loc[list(all_duplicates_indices)]
+                            df_duplicates = df.loc[list(all_duplicates_indices)]  # Convertir en liste
                             df_unique_among_duplicates = df_duplicates[~df_duplicates.duplicated(subset=column_names, keep=False)]  # Garde les valeurs uniques parmi les doublons
                     
                             # Créer le dataset sans les vrais doublons, mais en gardant les uniques parmi eux
-                            original_without_duplicates = df.drop(index=all_duplicates_indices)  # Retirer tous les doublons
+                            original_without_duplicates = df.drop(index=list(all_duplicates_indices))  # Convertir en liste ici aussi
                             original_without_duplicates = pd.concat([original_without_duplicates, df_unique_among_duplicates])  # Rajouter les valeurs uniques détectées
                         else:
-                            original_without_duplicates = df.drop(index=all_duplicates_indices)
+                            original_without_duplicates = df.drop(index=list(all_duplicates_indices))  # Convertir en liste ici aussi
                     else:
                         original_without_duplicates = None
-
 
 
                     # Vérification et affichage des résultats
