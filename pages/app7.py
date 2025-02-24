@@ -824,6 +824,7 @@ st.header(f"{menu_options[selected_option]} {selected_option}")
 
 # --- Interface Streamlit ---
 # --- Interface Streamlit ---
+# --- Interface Streamlit ---
 if selected_option == "Détecteur de doublons":
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
@@ -864,8 +865,17 @@ if selected_option == "Détecteur de doublons":
 
                     # Création du DataFrame "Données sans doublons"
                     if include_original_without_duplicates:
-                        # Supprimer les doublons et ne garder que les valeurs uniques
-                        original_without_duplicates = df.drop(index=list(all_duplicates_indices))
+                        # Marquer toutes les lignes qui sont des doublons (qu'elles soient uniques ou répétées)
+                        is_duplicate = df.duplicated(subset=column_names, keep=False)
+
+                        # Trouver les valeurs uniques parmi les doublons (elles apparaissent une seule fois)
+                        unique_among_duplicates = df[is_duplicate].drop_duplicates(subset=column_names, keep=False)
+
+                        # Exclure les vrais doublons (plusieurs occurrences)
+                        original_without_duplicates = df[~is_duplicate].copy()
+
+                        # Ajouter les valeurs uniques parmi les doublons
+                        original_without_duplicates = pd.concat([original_without_duplicates, unique_among_duplicates]).drop_duplicates()
                     else:
                         original_without_duplicates = None
 
@@ -895,6 +905,7 @@ if selected_option == "Détecteur de doublons":
                             file_name="doublons.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
+
 
 elif selected_option == "Croisement de fichiers":
  
