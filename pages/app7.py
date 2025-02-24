@@ -668,38 +668,6 @@ def detect_combined_duplicates(df, columns):
     combined_duplicates = df[df.duplicated(subset=columns, keep=False)]
     return combined_duplicates
 
-
-def apply_excel_format5(writer, sheet_name, df):
-    """Applique une mise en forme avancée à une feuille Excel."""
-    workbook = writer.book
-    worksheet = workbook[sheet_name]
-
-    # Style pour les en-têtes (gras + centré + fond gris)
-    header_fill = PatternFill(start_color="FFA07A", end_color="FFA07A", fill_type="solid")
-    for cell in worksheet[1]:
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="center")
-        cell.fill = header_fill  # Remplissage en gris clair
-
-    # Ajuster la largeur des colonnes automatiquement
-    for column in worksheet.columns:
-        max_length = 0
-        column_letter = column[0].column_letter  # Obtenir la lettre de la colonne
-        for cell in column:
-            try:
-                if cell.value:
-                    max_length = max(max_length, len(str(cell.value)))
-            except:
-                pass
-        worksheet.column_dimensions[column_letter].width = max_length + 2
-
-    # Mise en surbrillance des doublons en jaune
-    highlight_fill = PatternFill(start_color="FFFF99", end_color="FFFF99", fill_type="solid")
-    for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row, min_col=1, max_col=worksheet.max_column):
-        for cell in row:
-            if cell.value and str(cell.value).lower() in ["duplicated", "doublon"]:
-                cell.fill = highlight_fill
-
 def export_excel5(duplicate_dict, combined_duplicates, df_original, original_without_duplicates):
     """Crée un fichier Excel avec différents onglets et une mise en forme avancée."""
     output = io.BytesIO()
@@ -714,24 +682,24 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         # Feuille 1 : Données Initiales
         df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
-        #apply_excel_format5(writer, "Données_Initiales", df_original) #remplacer par votre fonction de formatage
+        apply_excel_format5(writer, "Données_Initiales", df_original)
 
         # Feuilles pour chaque colonne contenant des doublons
         for col, df_dup in duplicate_dict.items():
             if not df_dup.empty:
                 safe_col_name = "".join(c if c.isalnum() or c in " _-" else "_" for c in col)[:31]
                 df_dup.to_excel(writer, sheet_name=f"Doublons_{safe_col_name}", index=False)
-                #apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup) #remplacer par votre fonction de formatage
+                apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup)
 
         # Feuille pour les doublons combinés
         if not combined_duplicates.empty:
             combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
-            #apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates) #remplacer par votre fonction de formatage
+            apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
 
         # Feuille des données sans doublons
         if original_without_duplicates is not None and not original_without_duplicates.empty:
             original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
-            #apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates) #remplacer par votre fonction de formatage
+            apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
 
         # Feuille Récapitulatif
         total_duplicates = sum(len(df) for df in duplicate_dict.values() if not df.empty) + len(combined_duplicates)
@@ -742,10 +710,42 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
         }
         recap_df = pd.DataFrame(recap_data)
         recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
-        #apply_excel_format5(writer, "Récapitulatif", recap_df) #remplacer par votre fonction de formatage
+        apply_excel_format5(writer, "Récapitulatif", recap_df)
 
     output.seek(0)
     return output
+
+def apply_excel_format5(writer, sheet_name, df):
+    """Applique une mise en forme avancée à une feuille Excel."""
+    workbook = writer.book
+    worksheet = workbook[sheet_name]
+
+    # Style pour les en-têtes (gras + centré + fond gris clair)
+    header_fill = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+    for cell in worksheet[1]:
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal="center")
+        cell.fill = header_fill
+
+    # Ajuster la largeur des colonnes automatiquement
+    for column in worksheet.columns:
+        max_length = 0
+        column_letter = get_column_letter(column[0].column)
+        for cell in column:
+            try:
+                if cell.value:
+                    max_length = max(max_length, len(str(cell.value)))
+            except (TypeError, AttributeError):
+                pass
+        worksheet.column_dimensions[column_letter].width = max_length + 2
+
+    # Mise en surbrillance des doublons (exemple : si une colonne 'is_duplicate' est présente)
+    if 'is_duplicate' in df.columns:
+        highlight_fill = PatternFill(start_color="FFFF99", end_color="FFFF99", fill_type="solid")
+        for index, row in enumerate(df.itertuples(), start=2):
+            if getattr(row, 'is_duplicate', False):
+                for cell in worksheet[f'A{index}:{get_column_letter(worksheet.max_column)}{index}'][0]:
+                    cell.fill = highlight_fill
 
 st.markdown("""
     <style>
