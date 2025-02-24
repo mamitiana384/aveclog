@@ -868,7 +868,7 @@ if selected_option == "Détecteur de doublons":
                     if include_original_without_duplicates:
                         if keep_unique_values:
                             # Séparer les données en doublons et non-doublons
-                            df_duplicates = df.loc[all_duplicates_indices]
+                            df_duplicates = df.loc[list(all_duplicates_indices)]
                             df_unique_among_duplicates = df_duplicates[~df_duplicates.duplicated(subset=column_names, keep=False)]  # Garde les valeurs uniques parmi les doublons
                     
                             # Créer le dataset sans les vrais doublons, mais en gardant les uniques parmi eux
