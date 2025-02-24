@@ -823,8 +823,8 @@ st.markdown('<div class="main">', unsafe_allow_html=True)
 st.header(f"{menu_options[selected_option]} {selected_option}")  
 
 # --- Interface Streamlit ---
+# --- Interface Streamlit ---
 if selected_option == "Détecteur de doublons":
- 
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
 
@@ -839,7 +839,6 @@ if selected_option == "Détecteur de doublons":
         column_names = st.multiselect("Choisissez les colonnes pour détecter les doublons", df.columns)
 
         include_original_without_duplicates = st.checkbox("Inclure les données initiales sans doublons dans l'export")
-        keep_unique_values = st.checkbox("Conserver les valeurs uniques dans les doublons détectés")
 
         if st.button("Détecter les doublons"):
             if not column_names:
@@ -855,29 +854,20 @@ if selected_option == "Détecteur de doublons":
                     # Récupération des indices des doublons détectés
                     all_duplicates_indices = set()
 
-                    # Ajout des indices des doublons trouvés par colonne individuelle
+                    # Ajouter les indices des doublons trouvés par colonne individuelle
                     for df_dup in duplicate_dict.values():
                         all_duplicates_indices.update(df_dup.index)
 
-                    # Ajout des indices des doublons trouvés par combinaison de colonnes
+                    # Ajouter les indices des doublons trouvés par combinaison de colonnes
                     if not combined_duplicates.empty:
                         all_duplicates_indices.update(combined_duplicates.index)
 
                     # Création du DataFrame "Données sans doublons"
                     if include_original_without_duplicates:
-                        if keep_unique_values:
-                            # Séparer les données en doublons et non-doublons
-                            df_duplicates = df.loc[list(all_duplicates_indices)]  # Convertir en liste
-                            df_unique_among_duplicates = df_duplicates[~df_duplicates.duplicated(subset=column_names, keep=False)]  # Garde les valeurs uniques parmi les doublons
-                    
-                            # Créer le dataset sans les vrais doublons, mais en gardant les uniques parmi eux
-                            original_without_duplicates = df.drop(index=list(all_duplicates_indices))  # Convertir en liste ici aussi
-                            original_without_duplicates = pd.concat([original_without_duplicates, df_unique_among_duplicates])  # Rajouter les valeurs uniques détectées
-                        else:
-                            original_without_duplicates = df.drop(index=list(all_duplicates_indices))  # Convertir en liste ici aussi
+                        # Supprimer les doublons et ne garder que les valeurs uniques
+                        original_without_duplicates = df.drop(index=list(all_duplicates_indices))
                     else:
                         original_without_duplicates = None
-
 
                     # Vérification et affichage des résultats
                     if all(df_dup.empty for df_dup in duplicate_dict.values()) and combined_duplicates.empty:
