@@ -655,14 +655,6 @@ def detect_duplicates4(df, column_names):
 # Interface utilisateur avec Streamlit
 #st.set_page_config(page_title="Application de Vérification", layout="wide")
 #st.title('📊 Application de Vérification')
-# Détection des doublons dans chaque colonne
-def detect_column_duplicates(df, columns):
-    duplicate_dict = {}
-    for col in columns:
-        duplicates = df[df.duplicated(subset=[col], keep=False)]
-        duplicate_dict[col] = duplicates
-    return duplicate_dict
-
 # Détection des doublons dans une combinaison de colonnes
 def detect_combined_duplicates(df, columns):
     df_filtered = df.dropna(subset=columns)
@@ -670,24 +662,13 @@ def detect_combined_duplicates(df, columns):
     combined_duplicates = df_filtered[df_filtered.duplicated(subset=columns, keep=False)]
     return combined_duplicates
 
-
-def export_excel5(duplicate_dict, combined_duplicates, df_original, original_without_duplicates):
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
-        apply_excel_format5(writer, "Données_Initiales", df_original)
-        for col, df_dup in duplicate_dict.items():
-            if not df_dup.empty:
-                df_dup.to_excel(writer, sheet_name=f"Doublons_{col}", index=False)
-                apply_excel_format5(writer, f"Doublons_{col}", df_dup)
-        if not combined_duplicates.empty:
-            combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
-            apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
-        if original_without_duplicates is not None and not original_without_duplicates.empty:
-            original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
-            apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
-    output.seek(0)
-    return output
+# Détection des doublons dans chaque colonne
+def detect_column_duplicates(df, columns):
+    duplicate_dict = {}
+    for col in columns:
+        duplicates = df[df.duplicated(subset=[col], keep=False)]
+        duplicate_dict[col] = duplicates
+    return duplicate_dict
 
 # Appliquer une mise en forme avancée aux fichiers Excel
 def apply_excel_format5(writer, sheet_name, df):
@@ -708,6 +689,34 @@ def apply_excel_format5(writer, sheet_name, df):
             except:
                 pass
         worksheet.column_dimensions[column_letter].width = max_length + 2
+
+# Export des données en Excel
+def export_excel5(duplicate_dict, combined_duplicates, df_original, original_without_duplicates):
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
+        apply_excel_format5(writer, "Données_Initiales", df_original)
+        for col, df_dup in duplicate_dict.items():
+            if not df_dup.empty:
+                df_dup.to_excel(writer, sheet_name=f"Doublons_{col}", index=False)
+                apply_excel_format5(writer, f"Doublons_{col}", df_dup)
+        if not combined_duplicates.empty:
+            combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
+            apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
+        if original_without_duplicates is not None and not original_without_duplicates.empty:
+            original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
+            apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
+        # Feuille Récapitulatif
+        recap_data = {
+            "Total Lignes Initiales": [len(df_original)],
+            "Total Doublons Détectés": [sum(len(df) for df in duplicate_dict.values() if not df.empty) + len(combined_duplicates)],
+            "Total Après Suppression Doublons": [len(original_without_duplicates) if original_without_duplicates is not None else "Non inclus"]
+        }
+        recap_df = pd.DataFrame(recap_data)
+        recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
+        apply_excel_format5(writer, "Récapitulatif", recap_df)
+    output.seek(0)
+    return output
 
 st.markdown("""
     <style>
@@ -812,10 +821,14 @@ if selected_option == "Détecteur de doublons":
                     original_without_duplicates = None
                     if include_original_without_duplicates:
                         original_without_duplicates = df.drop_duplicates(subset=column_names, keep='first')
-                    if all(df_dup.empty for df_dup in duplicate_dict.values()) and combined_duplicates.empty:
-                        st.info("Aucun doublon trouvé.")
-                    else:
-                        st.success("Doublons détectés avec succès !")
+                    total_doublons = sum(len(df) for df in duplicate_dict.values() if not df.empty) + len(combined_duplicates)
+                    total_sans_doublons = len(original_without_duplicates) if original_without_duplicates is not None else "Non inclus"
+                    if total_doublons > 0:
+                        st.error("⚠️ Doublons detectés !")
+                        st.write(f"### Récapitulatif")
+                        st.write(f"- Nombre total de lignes initiales : {len(df)}")
+                        st.write(f"- Nombre total de doublons détectés : {total_doublons}")
+                        st.write(f"- Nombre total après suppression des doublons : {total_sans_doublons}")
                         for col, duplicates in duplicate_dict.items():
                             if not duplicates.empty:
                                 st.write(f"### Doublons dans la colonne **{col}** :", duplicates)
@@ -833,6 +846,8 @@ if selected_option == "Détecteur de doublons":
                             file_name="doublons.xlsx",
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
+                    else:
+                        st.success("✅ Aucun doublon detecté.")
 
 
 elif selected_option == "Croisement de fichiers":
