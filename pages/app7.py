@@ -655,97 +655,59 @@ def detect_duplicates4(df, column_names):
 # Interface utilisateur avec Streamlit
 #st.set_page_config(page_title="Application de Vérification", layout="wide")
 #st.title('📊 Application de Vérification')
+# Détection des doublons dans chaque colonne
 def detect_column_duplicates(df, columns):
-    """Détecte les doublons dans chaque colonne individuellement."""
     duplicate_dict = {}
     for col in columns:
         duplicates = df[df.duplicated(subset=[col], keep=False)]
         duplicate_dict[col] = duplicates
     return duplicate_dict
 
+# Détection des doublons dans une combinaison de colonnes
 def detect_combined_duplicates(df, columns):
-    """Détecte les doublons en considérant toutes les colonnes sélectionnées."""
-    combined_duplicates = df[df.duplicated(subset=columns, keep=False)]
+    df_filtered = df.dropna(subset=columns)
+    df_filtered = df_filtered[~df_filtered[columns].isin(['', '0']).any(axis=1)]
+    combined_duplicates = df_filtered[df_filtered.duplicated(subset=columns, keep=False)]
     return combined_duplicates
 
+
 def export_excel5(duplicate_dict, combined_duplicates, df_original, original_without_duplicates):
-    """Crée un fichier Excel avec différents onglets et une mise en forme avancée."""
     output = io.BytesIO()
-
-    df_original = df_original.fillna('')
-    df_original.replace([float('inf'), float('-inf')], '', inplace=True)
-
-    if original_without_duplicates is not None:
-        original_without_duplicates = original_without_duplicates.fillna('')
-        original_without_duplicates.replace([float('inf'), float('-inf')], '', inplace=True)
-
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        # Feuille 1 : Données Initiales
         df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
         apply_excel_format5(writer, "Données_Initiales", df_original)
-
-        # Feuilles pour chaque colonne contenant des doublons
         for col, df_dup in duplicate_dict.items():
             if not df_dup.empty:
-                safe_col_name = "".join(c if c.isalnum() or c in " _-" else "_" for c in col)[:31]
-                df_dup.to_excel(writer, sheet_name=f"Doublons_{safe_col_name}", index=False)
-                apply_excel_format5(writer, f"Doublons_{safe_col_name}", df_dup)
-
-        # Feuille pour les doublons combinés
+                df_dup.to_excel(writer, sheet_name=f"Doublons_{col}", index=False)
+                apply_excel_format5(writer, f"Doublons_{col}", df_dup)
         if not combined_duplicates.empty:
             combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
             apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
-
-        # Feuille des données sans doublons
         if original_without_duplicates is not None and not original_without_duplicates.empty:
             original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
             apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
-
-        # Feuille Récapitulatif
-        total_duplicates = sum(len(df) for df in duplicate_dict.values() if not df.empty) + len(combined_duplicates)
-        recap_data = {
-            "Nombre total de lignes": [len(df_original)],
-            "Nombre total de doublons": [total_duplicates],
-            "Nombre total sans doublons": [len(original_without_duplicates) if original_without_duplicates is not None else "Non inclus"]
-        }
-        recap_df = pd.DataFrame(recap_data)
-        recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
-        apply_excel_format5(writer, "Récapitulatif", recap_df)
-
     output.seek(0)
     return output
 
+# Appliquer une mise en forme avancée aux fichiers Excel
 def apply_excel_format5(writer, sheet_name, df):
-    """Applique une mise en forme avancée à une feuille Excel."""
     workbook = writer.book
-    worksheet = workbook[sheet_name]
-
-    # Style pour les en-têtes (gras + centré + fond gris clair)
-    header_fill = PatternFill(start_color="D3D3D3", end_color="D3D3D3", fill_type="solid")
+    worksheet = writer.sheets[sheet_name]
+    header_fill = PatternFill(start_color="FFA07A", end_color="FFA07A", fill_type="solid")
     for cell in worksheet[1]:
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal="center")
         cell.fill = header_fill
-
-    # Ajuster la largeur des colonnes automatiquement
     for column in worksheet.columns:
         max_length = 0
-        column_letter = get_column_letter(column[0].column)
+        column_letter = column[0].column_letter
         for cell in column:
             try:
                 if cell.value:
                     max_length = max(max_length, len(str(cell.value)))
-            except (TypeError, AttributeError):
+            except:
                 pass
         worksheet.column_dimensions[column_letter].width = max_length + 2
-
-    # Mise en surbrillance des doublons (exemple : si une colonne 'is_duplicate' est présente)
-    if 'is_duplicate' in df.columns:
-        highlight_fill = PatternFill(start_color="FFFF99", end_color="FFFF99", fill_type="solid")
-        for index, row in enumerate(df.itertuples(), start=2):
-            if getattr(row, 'is_duplicate', False):
-                for cell in worksheet[f'A{index}:{get_column_letter(worksheet.max_column)}{index}'][0]:
-                    cell.fill = highlight_fill
 
 st.markdown("""
     <style>
@@ -826,77 +788,45 @@ st.header(f"{menu_options[selected_option]} {selected_option}")
 if selected_option == "Détecteur de doublons":
 
     uploaded_file = st.file_uploader("Choisissez un fichier Excel", type="xlsx")
-
     if uploaded_file is not None:
         xls = pd.ExcelFile(uploaded_file)
         sheet_names = xls.sheet_names
         selected_sheet = st.selectbox("Choisissez un onglet", sheet_names)
-
         df = pd.read_excel(xls, sheet_name=selected_sheet, dtype=str)
         st.write("Aperçu des données :", df.head())
-
         column_names = st.multiselect("Choisissez les colonnes pour détecter les doublons", df.columns)
-
         include_original_without_duplicates = st.checkbox("Inclure les données initiales sans doublons dans l'export")
-
         if st.button("Détecter les doublons"):
             if not column_names:
                 st.warning("Veuillez sélectionner au moins une colonne.")
             else:
                 with st.spinner("Détection des doublons en cours..."):
                     time.sleep(2)
-
-                    # Détection des doublons
                     duplicate_dict = detect_column_duplicates(df.copy(), column_names)
                     combined_duplicates = detect_combined_duplicates(df.copy(), column_names)
-
-                    # Récupération des indices des doublons détectés
                     all_duplicates_indices = set()
-
-                    # Ajouter les indices des doublons trouvés par colonne individuelle
                     for df_dup in duplicate_dict.values():
                         all_duplicates_indices.update(df_dup.index)
-
-                    # Ajouter les indices des doublons trouvés par combinaison de colonnes
                     if not combined_duplicates.empty:
                         all_duplicates_indices.update(combined_duplicates.index)
-
-                    # Création du DataFrame "Données sans doublons"
+                    original_without_duplicates = None
                     if include_original_without_duplicates:
-                        # Marquer toutes les lignes qui sont des doublons (qu'elles soient uniques ou répétées)
-                        is_duplicate = df.duplicated(subset=column_names, keep=False)
-
-                        # Trouver les valeurs uniques parmi les doublons (elles apparaissent une seule fois)
-                        unique_among_duplicates = df[is_duplicate].drop_duplicates(subset=column_names, keep=False)
-
-                        # Exclure les vrais doublons (plusieurs occurrences)
-                        original_without_duplicates = df[~is_duplicate].copy()
-
-                        # Ajouter les valeurs uniques parmi les doublons
-                        original_without_duplicates = pd.concat([original_without_duplicates, unique_among_duplicates]).drop_duplicates()
-                    else:
-                        original_without_duplicates = None
-
-                    # Vérification et affichage des résultats
+                        original_without_duplicates = df.drop_duplicates(subset=column_names, keep='first')
                     if all(df_dup.empty for df_dup in duplicate_dict.values()) and combined_duplicates.empty:
                         st.info("Aucun doublon trouvé.")
                     else:
                         st.success("Doublons détectés avec succès !")
-
                         for col, duplicates in duplicate_dict.items():
                             if not duplicates.empty:
                                 st.write(f"### Doublons dans la colonne **{col}** :", duplicates)
-
                         if not combined_duplicates.empty:
                             st.write("### Doublons combinés sur les colonnes sélectionnées :", combined_duplicates)
-
                         excel_data = export_excel5(
                             duplicate_dict,
                             combined_duplicates,
                             df_original=df,
                             original_without_duplicates=original_without_duplicates
                         )
-
                         st.download_button(
                             label="Télécharger les doublons en Excel",
                             data=excel_data,
