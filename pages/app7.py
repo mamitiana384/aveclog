@@ -689,23 +689,37 @@ def apply_excel_format5(writer, sheet_name, df):
             except:
                 pass
         worksheet.column_dimensions[column_letter].width = max_length + 2
-
+def clean_sheet_name(sheet_name):
+    """ Nettoie le nom de l'onglet pour éviter les caractères invalides """
+    invalid_chars = '[]:*?/\\'
+    for char in invalid_chars:
+        sheet_name = sheet_name.replace(char, "_")  # Remplace les caractères interdits
+    return sheet_name[:31]  # Limite à 31 caractères (Excel impose cette limite)
 # Export des données en Excel
 def export_excel5(duplicate_dict, combined_duplicates, df_original, original_without_duplicates):
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        # Feuille Données Initiales
         df_original.to_excel(writer, sheet_name="Données_Initiales", index=False)
         apply_excel_format5(writer, "Données_Initiales", df_original)
+
+        # Feuilles des Doublons
         for col, df_dup in duplicate_dict.items():
             if not df_dup.empty:
-                df_dup.to_excel(writer, sheet_name=f"Doublons_{col}", index=False)
-                apply_excel_format5(writer, f"Doublons_{col}", df_dup)
+                sheet_name = clean_sheet_name(f"Doublons_{col}")  # Nettoyer le nom de l'onglet
+                df_dup.to_excel(writer, sheet_name=sheet_name, index=False)
+                apply_excel_format5(writer, sheet_name, df_dup)
+
+        # Feuille Doublons Combinés
         if not combined_duplicates.empty:
             combined_duplicates.to_excel(writer, sheet_name="Doublons_Combinés", index=False)
             apply_excel_format5(writer, "Doublons_Combinés", combined_duplicates)
+
+        # Feuille Données Sans Doublons
         if original_without_duplicates is not None and not original_without_duplicates.empty:
             original_without_duplicates.to_excel(writer, sheet_name="Données_Sans_Doublons", index=False)
             apply_excel_format5(writer, "Données_Sans_Doublons", original_without_duplicates)
+
         # Feuille Récapitulatif
         recap_data = {
             "Total Lignes Initiales": [len(df_original)],
@@ -715,6 +729,7 @@ def export_excel5(duplicate_dict, combined_duplicates, df_original, original_wit
         recap_df = pd.DataFrame(recap_data)
         recap_df.to_excel(writer, sheet_name="Récapitulatif", index=False)
         apply_excel_format5(writer, "Récapitulatif", recap_df)
+
     output.seek(0)
     return output
 
